@@ -49,9 +49,9 @@ uint16_t TS_LEFT = 920;
 uint16_t TS_RT  = 150;
 uint16_t TS_TOP = 940;
 uint16_t TS_BOT = 120;
-
+/*
 #define MINPRESSURE 10
-#define MAXPRESSURE 1000
+#define MAXPRESSURE 1000*/
 
 
 
@@ -67,7 +67,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 double history[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-TSPoint tp;
+//TSPoint tp;
 int oldsecond = 1;
 int currentview = 1;
 //int currentvalue = 1;
@@ -252,45 +252,6 @@ void loop() {
       //  fillhumid(openspace,myWidth,myHeight);
       //  filltemp(openspace,myWidth,myHeight);
 
-
-
-      //uint16_t xpos, ypos;  //screen coordinates
-      //tp = ts.getPoint();   //tp.x, tp.y are ADC values
-
-      /*   // if sharing pins, you'll need to fix the directions of the touchscreen pins
-         pinMode(XM, OUTPUT);
-         pinMode(YP, OUTPUT);
-         pinMode(XP, OUTPUT);
-         pinMode(YM, OUTPUT);
-         //    digitalWrite(XM, HIGH);
-         //    digitalWrite(YP, HIGH);
-         // we have some minimum pressure we consider 'valid'
-         // pressure of 0 means no pressing!
-
-         /*if (tp.z > MINPRESSURE && tp.z < MAXPRESSURE) {//cords dont matter just need a touch value
-             // is controller wired for Landscape ? or are we oriented in Landscape?
-             //if (SwapXY != (Orientation & 1)) SWAP(tp.x, tp.y);
-             // scale from 0->1023 to tft.width  i.e. left = 0, rt = width
-             // most mcufriend have touch (with icons) that extends below the TFT
-             // screens without icons need to reserve a space for "erase"
-             // scale the ADC values from ts.getPoint() to screen values e.g. 0-239
-             xpos = map(tp.x, TS_LEFT, TS_RT, 0, tft.width());
-             ypos = map(tp.y, TS_TOP, TS_BOT, 0, tft.height());
-             Serial.println(ypos);
-           }*/
-
-
-      //if (tp.z > MINPRESSURE && tp.z < MAXPRESSURE) {
-      /*if (tp.z > 20) {
-        //Serial.println(tp.z);
-        tft.fillScreen(BLACK);
-        //Serial.println("Active");
-        currentview++;
-        if (currentview == 3) {
-        currentview -= 2;
-        }
-        grapher();
-        }*/
       if (second() == 30) {
         currentview += 1;
         if (currentview == 3) {

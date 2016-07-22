@@ -19,7 +19,7 @@ MCUFRIEND_kbv tft;
 
 //#include <stdint.h>
 //___________________________________
-//#include "TouchScreen.h"
+#include "TouchScreen.h"
 //____________________________________
 /*#if defined(__SAM3X8E__)
   #undef __FlashStringHelper::F(string_literal)
@@ -37,7 +37,7 @@ MCUFRIEND_kbv tft;
   if ('0' <= *p && *p <= '9') v = *p - '0';
   return 10 * v + *++p - '0';
   }*/
-/*
+
 // These are the pins for the shield!
 #define YP A1  // must be an analog pin, use "An" notation!
 #define XM A2  // must be an analog pin, use "An" notation!
@@ -49,7 +49,7 @@ uint16_t TS_LEFT = 920;
 uint16_t TS_RT  = 150;
 uint16_t TS_TOP = 940;
 uint16_t TS_BOT = 120;
-
+/*
 #define MINPRESSURE 10
 #define MAXPRESSURE 1000*/
 
@@ -58,7 +58,7 @@ uint16_t TS_BOT = 120;
 // For better pressure precision, we need to know the resistance
 // between X+ and X- Use any multimeter to read it
 // For the one we're using, its 300 ohms across the X plate
-//TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
+TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 #define BLACK   0x0000
 #define BLUE    0x001F
@@ -198,8 +198,8 @@ void loop() {
       //masterfile = SD.open("testh.txt", FILE_WRITE);
       //masterfile.seek(0);
 
-      writer("testh",dht.humidity);
-      writer("testt",dht.temperature_C);
+     // writer("testh",dht.humidity);
+      //writer("testt",dht.temperature_C);
       
       /*masterfile.println(int(dht.humidity));
       // Serial.println(int(dht.humidity));
@@ -216,12 +216,12 @@ void loop() {
 
       grapher();
       //shifter("testh");
-    } else if ((minute() == 59) && (second() == 0)) {
+    } /*else if ((minute() == 59) && (second() == 0)) {
       masterfile = SD.open("a.txt");
       while (masterfile.available()) {
         holder2=masterfile.readStringUntil('\n');
         holder=holder2.toInt();
-      }}
+      }}*/
 
 
 
@@ -321,12 +321,12 @@ void loop() {
       shifter("testt", "logt");
       outgraph("logh", 15, BLUE);
       outgraph("logt", 15, GREEN);
-    } else {
+    } /*else {
       shifter("weekh", "wlogh");
       shifter("weekt", "wlogt");
       outgraph("wlogh", 15, BLUE);
       outgraph("wlogt", 15, GREEN);
-    }
+    }*/
   }
 
 
@@ -412,7 +412,7 @@ void loop() {
       //temp++;
 
     }
-    //masterfile.close();
+    masterfile.close();
     /*
       Serial.println("_");
       Serial.println(history[0]);
@@ -426,7 +426,7 @@ void loop() {
     for (int c = 0; c < 15; c++) {
       masterfile.println(history[c]);
       //Serial.println(history[c]);
-     // masterfile.flush();
+      masterfile.flush();
 
     }
     masterfile.close();
