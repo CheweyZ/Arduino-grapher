@@ -124,22 +124,6 @@ void setup() {
     mm = conv2d(__TIME__ + 3);
     ss = conv2d(__TIME__ + 6);
     //setTime(hh, mm, ss, 07, 14, 17);*/
-  //if (!SD.exists("settings.txt")) {
-  masterfile = SD.open("settings.txt");
-  masterfile.close();
-  masterfile = SD.open("monthlog.txt");
-  masterfile.close();
-  /* masterfile = SD.open("daylog.txt");
-    masterfile.close();*/
-  /* masterfile = SD.open("logh.txt");
-    masterfile.close();
-     masterfile = SD.open("logt.txt");
-    masterfile.close();*/
-  masterfile = SD.open("testh.txt");
-  masterfile.close();
-  masterfile = SD.open("testt.txt");
-  masterfile.close();
-  // }
 
   //grapher();
 }
@@ -198,8 +182,8 @@ void loop() {
       //masterfile = SD.open("testh.txt", FILE_WRITE);
       //masterfile.seek(0);
 
-      writer("testh",dht.humidity);
-      writer("testt",dht.temperature_C);
+      writer("hh",dht.humidity);
+      writer("ht",dht.temperature_C);
       
       /*masterfile.println(int(dht.humidity));
       // Serial.println(int(dht.humidity));
@@ -216,12 +200,13 @@ void loop() {
 
       grapher();
       //shifter("testh");
-    } /*else if ((minute() == 59) && (second() == 0)) {
-      masterfile = SD.open("a.txt");
+    } else if ((minute() == 59) && (second() == 0)) {
+      masterfile = SD.open("weekh.txt");
       while (masterfile.available()) {
         holder2=masterfile.readStringUntil('\n');
-        holder=holder2.toInt();
-      }}*/
+        holder+=holder2.toInt();
+      }
+      }
 
 
 
@@ -231,70 +216,26 @@ void loop() {
       tft.setCursor((myWidth * 3.5 / 8) / 3, myHeight / 8);
       tft.print(minute());
 
-      if (dht.humidity > highhumid) {
+     /* if (dht.humidity > highhumid) {
         tft.setTextColor(humidhigh, BLACK);
       } else if (dht.humidity > warnhumid) {
         tft.setTextColor(humidwarn, BLACK);
-      } else {
+      } else {*/
         tft.setTextColor(humidcol, BLACK);
-      }
+      //}
       //tft.setTextColor(humidcol,BLACK);
       tft.setCursor((myWidth / 3) + 20, myHeight / 8);
       tft.print(dht.humidity);
-      if (dht.temperature_C > hightemp) {
+      /*if (dht.temperature_C > hightemp) {
         tft.setTextColor(temphigh, BLACK);
       } else if (dht.temperature_C > warntemp) {
         tft.setTextColor(tempwarn, BLACK);
-      } else {
+      } else {*/
         tft.setTextColor(tempcol, BLACK);
-      }
+     // }
       tft.setCursor(((2 * myWidth) / 3) + 20, myHeight / 8);
       tft.print(dht.temperature_C);
 
-      // openspace = myHeight - 12 - myHeight / 4;
-
-      //  fillhumid(openspace,myWidth,myHeight);
-      //  filltemp(openspace,myWidth,myHeight);
-
-
-
-      //uint16_t xpos, ypos;  //screen coordinates
-      //tp = ts.getPoint();   //tp.x, tp.y are ADC values
-
-      /*   // if sharing pins, you'll need to fix the directions of the touchscreen pins
-         pinMode(XM, OUTPUT);
-         pinMode(YP, OUTPUT);
-         pinMode(XP, OUTPUT);
-         pinMode(YM, OUTPUT);
-         //    digitalWrite(XM, HIGH);
-         //    digitalWrite(YP, HIGH);
-         // we have some minimum pressure we consider 'valid'
-         // pressure of 0 means no pressing!
-
-         /*if (tp.z > MINPRESSURE && tp.z < MAXPRESSURE) {//cords dont matter just need a touch value
-             // is controller wired for Landscape ? or are we oriented in Landscape?
-             //if (SwapXY != (Orientation & 1)) SWAP(tp.x, tp.y);
-             // scale from 0->1023 to tft.width  i.e. left = 0, rt = width
-             // most mcufriend have touch (with icons) that extends below the TFT
-             // screens without icons need to reserve a space for "erase"
-             // scale the ADC values from ts.getPoint() to screen values e.g. 0-239
-             xpos = map(tp.x, TS_LEFT, TS_RT, 0, tft.width());
-             ypos = map(tp.y, TS_TOP, TS_BOT, 0, tft.height());
-             Serial.println(ypos);
-           }*/
-
-
-      //if (tp.z > MINPRESSURE && tp.z < MAXPRESSURE) {
-      /*if (tp.z > 20) {
-        //Serial.println(tp.z);
-        tft.fillScreen(BLACK);
-        //Serial.println("Active");
-        currentview++;
-        if (currentview == 3) {
-        currentview -= 2;
-        }
-        grapher();
-        }*/
       if (second() == 30) {
         currentview += 1;
         if (currentview == 3) {
@@ -317,21 +258,21 @@ void loop() {
   void grapher() {
     tft.fillScreen(BLACK);
     if (currentview == 1) {
-      shifter("testh", "logh");
-      shifter("testt", "logt");
-      outgraph("logh", 15, BLUE);
-      outgraph("logt", 15, GREEN);
-    } /*else {
-      shifter("weekh", "wlogh");
-      shifter("weekt", "wlogt");
-      outgraph("wlogh", 15, BLUE);
-      outgraph("wlogt", 15, GREEN);
-    }*/
+      shifter("hh", "h");
+      shifter("ht", "t");
+      outgraph("h", 15, BLUE);
+      outgraph("t", 15, GREEN);
+    } else {
+      shifter("wh", "wlh");
+      shifter("wt", "wlt");
+      outgraph("wlh", 7, BLUE);
+      outgraph("wlt", 7, GREEN);
+    }
   }
 
 
   void writer(String fileto,float data){
-    masterfile = SD.open(String(fileto + ".txt"), FILE_WRITE);
+    masterfile = SD.open(String(fileto + ".csv"), FILE_WRITE);
      masterfile.println(data);
      masterfile.close();
     
@@ -344,7 +285,7 @@ void loop() {
     int myHeight = tft.height();
     int drawpointx = 0;
     int drawpointy = 0;
-    masterfile = SD.open(String(fileto + ".txt"));
+    masterfile = SD.open(String(fileto + ".csv"));
     for (int upto = 0; upto <= howmany; upto++) {
       //Serial.println(masterfile.read());
       //masterfile.seek(upto);
@@ -376,11 +317,11 @@ void loop() {
 
 
   void shifter(String fileto, String newfile) {
-    SD.remove(String(newfile + ".txt"));
+    SD.remove(String(newfile + ".csv"));
     int temp = 0;
     int temp2 = 0;
     //Serial.println("it");
-    masterfile = SD.open(String(fileto + ".txt"));
+    masterfile = SD.open(String(fileto + ".csv"));
     //masterfile.seek(20);
     while (masterfile.available()) {
       masterfile.readStringUntil('\n');
@@ -392,7 +333,7 @@ void loop() {
 
     // masterfile = SD.open(String(fileto + ".txt"));
     for (int count = 0; count < 16; count++) {
-      masterfile = SD.open(String(fileto + ".txt"));
+      masterfile = SD.open(String(fileto + ".csv"));
       temp2 = 0;
       while (masterfile.available()) {
         if (temp2 == (temp - count)) {
@@ -422,7 +363,7 @@ void loop() {
     //Serial.println(sizeof(history));
     //Serial.println(history[50]);
 
-    masterfile = SD.open(String(newfile + ".txt"), FILE_WRITE);
+    masterfile = SD.open(String(newfile + ".csv"), FILE_WRITE);
     for (int c = 0; c < 15; c++) {
       masterfile.println(history[c]);
       //Serial.println(history[c]);
