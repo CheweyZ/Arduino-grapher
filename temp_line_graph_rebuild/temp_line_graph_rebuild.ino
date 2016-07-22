@@ -198,8 +198,8 @@ void loop() {
       //masterfile = SD.open("testh.txt", FILE_WRITE);
       //masterfile.seek(0);
 
-     // writer("testh",dht.humidity);
-      //writer("testt",dht.temperature_C);
+      writer("testh",dht.humidity);
+      writer("testt",dht.temperature_C);
       
       /*masterfile.println(int(dht.humidity));
       // Serial.println(int(dht.humidity));
