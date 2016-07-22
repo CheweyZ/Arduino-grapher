@@ -152,15 +152,16 @@ void loop() {
     //tft.drawFastHLine(0, (myHeight*7)/8, myWidth, linecol);  works use for weeks
 
     if (currentview == 1) {
-      tft.drawFastHLine(0, (myHeight - 12), myWidth, linecol);
+     // tft.drawFastHLine(0, (myHeight - 12), myWidth, linecol);
       howmanyaccross = 15;
       multiplier = 15;
     } else if (currentview == 2) {
-      tft.setCursor(0, (myHeight - 15));
-      tft.drawFastHLine(0, (myHeight * 7) / 8, myWidth, linecol);
+     // tft.setCursor(0, (myHeight - 15));
+     // tft.drawFastHLine(0, (myHeight * 7) / 8, myWidth, linecol);
       howmanyaccross = 7;
       multiplier = 1;
     }
+    tft.drawFastHLine(0, (myHeight - 12), myWidth, linecol);
     //currentvalue = 0;
     tft.setTextSize(1);
     for (int currentvalue = 0; currentvalue <= howmanyaccross; currentvalue++) {
