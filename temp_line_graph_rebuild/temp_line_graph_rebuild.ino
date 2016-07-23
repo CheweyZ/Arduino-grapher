@@ -91,13 +91,13 @@ int tempwarn = YELLOW;
 int humidhigh = RED;
 int temphigh = RED;
 
+/*
 int warntemp = 26;
 int hightemp = 35;
-/*int warntemp = 22;
-  int hightemp = 25;*/
 
 int warnhumid = 60;
 int highhumid = 80;
+*/
 
 //End Of User Settings
 
@@ -188,7 +188,7 @@ void loop() {
 
       grapher();
     }
-    if ((minute() == 00) && (second() == 10)) {
+    if ((hour() == 23) && (minute() == 00)&&(second() == 00)) {
       weekavg("h");
       weekavg("t");
       grapher();
@@ -202,7 +202,7 @@ void loop() {
     tft.setCursor((myWidth * 3.5 / 8) / 3, myHeight / 8);
     tft.print(minute());
 
-    /* if (dht.humidity > highhumid) {
+     /*if (dht.humidity > highhumid) {
        tft.setTextColor(humidhigh, BLACK);
       } else if (dht.humidity > warnhumid) {
        tft.setTextColor(humidwarn, BLACK);
@@ -371,11 +371,4 @@ void shifter(String fileto, String newfile) {
   }
   masterfile.close();
 }
-
-
-/*
-  masterfile = SD.open("testh.txt", FILE_WRITE);
-  //masterfile.seek(0);
-  masterfile.println(int(dht.humidity));
-*/
 
