@@ -130,11 +130,13 @@ void loop() {
       }
       tft.print(second());*/
 
+    //this here is setting up a 3 top boxes this is to make it look nice and provie a simple division between the data
     tft.drawFastHLine(0, myHeight / 4, myWidth, linecol);
     tft.drawFastVLine(myWidth / 3, 0, myHeight / 4, linecol);
     tft.drawFastVLine((myWidth / 3) * 2, 0, myHeight / 4, linecol);
     //tft.drawFastHLine(0, (myHeight*7)/8, myWidth, linecol);  works use for weeks
 
+    //the detection of what view mode its currently in s to change the nummbers along to the bottom to week or 15 min mode
     if (currentview == 1) {
       // tft.drawFastHLine(0, (myHeight - 12), myWidth, linecol);
       howmanyaccross = 15;
@@ -156,7 +158,7 @@ void loop() {
     }
     tft.setTextSize(2);
 
-
+    //if it has been 15 min then it will update and write to the file as to be able to log the data
     if (((minute() % 15) == 0) && (second() == 0)) {
 
       writer("hh", dht.humidity);
@@ -164,6 +166,8 @@ void loop() {
 
       grapher();
     }
+
+    //if its about to be mid night then this will fire off triggering the day to now be logged
     if ((hour() == 23) && (minute() == 00)&&(second() == 00)) {
       weekavg("h");
       weekavg("t");
@@ -172,12 +176,13 @@ void loop() {
 
 
 
-
+    //the output to display the clock at the top of the file
     tft.setCursor((myWidth / 8) / 3, myHeight / 8);
     tft.print(hour());
     tft.setCursor((myWidth * 3.5 / 8) / 3, myHeight / 8);
     tft.print(minute());
 
+      //this here when enough memory will change the colour of the humidity and temp if its either warning or to high this is to alert the user that ther house is in unrecomened settings
      /*if (dht.humidity > highhumid) {
        tft.setTextColor(humidhigh, BLACK);
       } else if (dht.humidity > warnhumid) {
@@ -197,7 +202,8 @@ void loop() {
     // }
     tft.setCursor(((2 * myWidth) / 3) + 20, myHeight / 8);
     tft.print(dht.temperature_C);
-
+    //this will update the view mode once a minute but it triggers on 15 as it gives all loggers and other events to have triggered before it triggers as most cpu is needed for this 
+    //particular follow onevents
     if (second() == 15) {
       currentview += 1;
       if (currentview == 3) {
@@ -205,10 +211,13 @@ void loop() {
       }
       grapher();
     }
+
+    //this enable the screen to update once a second so that its not updating every cpu cycle and putting more stress on the arduino than what is needed
     oldsecond = second();
   }
 }
 
+//this is called each time the view mode changes and allows for it to update and call on the other required functions in oreder to display the most accurate and relevant results
 void grapher() {
   tft.fillScreen(BLACK);
   if (currentview == 1) {
@@ -224,14 +233,16 @@ void grapher() {
   }
 }
 
-
+//this little one here is to minimlise the code so that whenever anything needs to write to a file it just calls this to write aka shortening code (it had to be done)
 void writer(String fileto, float data) {
   masterfile = SD.open(String(fileto + ".csv"), FILE_WRITE);
   masterfile.println(data);
   masterfile.close();
 }
 
-
+//this will take the average of the last 225 miutes of record histroy and set it to be plotted as that days temp and humid
+//this means that in the event either someone blows on the sensor or a cold gust of winds blows at the time of the record the day will not be void as by taking tha avg it
+//reduse the chance of offset
 void weekavg(String fileto) {
   holder3 = 0;
   holder = 0;
@@ -246,7 +257,7 @@ void weekavg(String fileto) {
 }
 
 
-
+//this is the plotter function that when called will plot whith th given data this is to again shorten the cade and make it more dynamic and not so hard coded
 void outgraph(String fileto, int howmany, int col) {
   int myWidth = tft.width();
   int myHeight = tft.height();
@@ -269,7 +280,10 @@ void outgraph(String fileto, int howmany, int col) {
 
 
 
+//this will read from the requested file figure out how long it is then read the last x number of lines back to front this means that as a file is writen to it appends to the last line
+//and the grapher reads from the top this this takes the last x lines and flips and puts in a new small file ready for the grapher to graph
 
+//possible drawbacks that when the file is horrificaly long it may take a while to read and flip so patch may be needed
 void shifter(String fileto, String newfile) {
   SD.remove(String(newfile + ".csv"));
   int temp = 0;
