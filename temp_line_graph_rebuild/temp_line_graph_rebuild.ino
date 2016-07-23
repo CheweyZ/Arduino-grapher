@@ -19,7 +19,7 @@ MCUFRIEND_kbv tft;
 
 //#include <stdint.h>
 //___________________________________
-#include "TouchScreen.h"
+//#include "TouchScreen.h"
 //____________________________________
 /*#if defined(__SAM3X8E__)
   #undef __FlashStringHelper::F(string_literal)
@@ -37,7 +37,7 @@ MCUFRIEND_kbv tft;
   if ('0' <= *p && *p <= '9') v = *p - '0';
   return 10 * v + *++p - '0';
   }*/
-
+/*
 // These are the pins for the shield!
 #define YP A1  // must be an analog pin, use "An" notation!
 #define XM A2  // must be an analog pin, use "An" notation!
@@ -58,7 +58,7 @@ uint16_t TS_BOT = 120;
 // For better pressure precision, we need to know the resistance
 // between X+ and X- Use any multimeter to read it
 // For the one we're using, its 300 ohms across the X plate
-TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
+//TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 #define BLACK   0x0000
 #define BLUE    0x001F
@@ -119,7 +119,7 @@ void setup() {
   tft.fillScreen(BLACK);
   //tft.setTextSize(2);
   tft.setRotation(1);
-  setTime(22, 14, 55, 07, 14, 17);
+  setTime(22, 59, 55, 07, 14, 17);
   /*  hh = conv2d(__TIME__);
     mm = conv2d(__TIME__ + 3);
     ss = conv2d(__TIME__ + 6);
@@ -138,13 +138,13 @@ void loop() {
     int myHeight = tft.height();
     //tft.fillRect(0, 0, myWidth, myHeight/4, BLACK);
     tft.setTextColor(WHITE, BLACK);
-    tft.setCursor((myWidth * 6 / 8) / 3, myHeight / 8);
+   /* tft.setCursor((myWidth * 6 / 8) / 3, myHeight / 8);
     if (second() == 0) {
       tft.fillRect(0, 0, myWidth, myHeight / 4, BLACK); //as wierd stuff happens if this is not here the placement of the second jumps one and leaves the 9 from 59
       // above the line fills to make the refresh as seamless as possible
 
     }
-    tft.print(second());
+    tft.print(second());*/
 
     tft.drawFastHLine(0, myHeight / 4, myWidth, linecol);
     tft.drawFastVLine(myWidth / 3, 0, myHeight / 4, linecol);
@@ -185,28 +185,12 @@ void loop() {
 
       writer("hh",dht.humidity);
       writer("ht",dht.temperature_C);
-      
-      /*masterfile.println(int(dht.humidity));
-      // Serial.println(int(dht.humidity));
-      //masterfile.flush();
-      masterfile.close();
-      masterfile = SD.open("testt.txt", FILE_WRITE);
-      //masterfile.seek(0);
-      masterfile.println(int(dht.temperature_C));
-      //masterfile.flush();
-      masterfile.close();*/
-
-      //masterfile.seek(4);
-      // if (masterfile.available()) {
 
       grapher();
-      //shifter("testh");
-    } else if ((minute() == 59) && (second() == 0)) {
-      masterfile = SD.open("weekh.txt");
-      while (masterfile.available()) {
-        holder2=masterfile.readStringUntil('\n');
-        holder+=holder2.toInt();
-      }
+    } else if ((minute() == 00) && (second() == 0)) {
+      weekavg("h");
+      weekavg("t");
+      grapher();
       }
 
 
@@ -237,7 +221,7 @@ void loop() {
       tft.setCursor(((2 * myWidth) / 3) + 20, myHeight / 8);
       tft.print(dht.temperature_C);
 
-      if (second() == 30) {
+      if (second() == 15) {
         currentview += 1;
         if (currentview == 3) {
           currentview -= 2;
@@ -267,7 +251,7 @@ void loop() {
       shifter("wh", "wlh");
       shifter("wt", "wlt");
       outgraph("wlh", 7, BLUE);
-      outgraph("wlt", 7, GREEN);
+      //outgraph("wlt", 7, GREEN);
     }
   }
 
@@ -275,8 +259,20 @@ void loop() {
   void writer(String fileto,float data){
     masterfile = SD.open(String(fileto + ".csv"), FILE_WRITE);
      masterfile.println(data);
-     masterfile.close();
-    
+     masterfile.close();    
+  }
+
+
+  void weekavg(String fileto){
+      holder3=0;
+      masterfile = SD.open(String(fileto+".csv"));
+      while (masterfile.available()) {
+        holder2=masterfile.readStringUntil('\n');
+        holder+=holder2.toInt();
+        holder3++;
+      }
+      masterfile.close();
+      writer(String("w"+fileto),(holder/holder3));
   }
 
 
@@ -368,7 +364,7 @@ void loop() {
     for (int c = 0; c < 15; c++) {
       masterfile.println(history[c]);
       //Serial.println(history[c]);
-      masterfile.flush();
+      //masterfile.flush();
 
     }
     masterfile.close();
